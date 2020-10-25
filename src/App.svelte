@@ -1,6 +1,10 @@
 <script>
+  import CovidApi from './api/CovidApi.svelte'
+  let list = [];
 	export let title;
 </script>
+
+<CovidApi bind:list={list}/>
 
 <main>
 	<h1>{title}</h1>
@@ -19,14 +23,16 @@
       </tr>
 	  </thead>
 	  <tbody>
+      {#each list as item}
       <tr>
-        <td>South Korea</td>
-        <td>2020-10-17</td>
-        <td>1111</td>
-        <td>111</td>
-        <td>111</td>
-        <td>111</td>
+        <td>{item.Country}</td>
+        <td>{item.Date}</td>
+        <td>{item.Confirmed}</td>
+        <td>{item.Deaths}</td>
+        <td>{item.Recovered}</td>
+        <td>{item.Active}</td>
       </tr>
+      {/each}
 	  </tbody>
 	</table>
 </main>
