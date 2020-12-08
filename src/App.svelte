@@ -11,7 +11,7 @@
 	<select>
 	  <option>South Korea</option>
 	</select>
-	<table>
+	<table class="table">
 	  <thead>
       <tr>
         <th>Country</th>
@@ -37,24 +37,33 @@
 	</table>
 </main>
 
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
+<style lang="scss">
+  @media (min-width: 640px) {
+    main {
+      max-width: none;
+    }
+  }
+  $color: #ff3e00;
+  main {
+    text-align: center;
+    padding: 1em;
+    max-width: 1920px;
+    margin: 0 auto;
+  }
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
+  h1 {
+    color: $color;
+    text-transform: uppercase;
+    font-size: 4em;
+    font-weight: 100;
+  };
 
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+  table, th, tr, td {
+    border: 1px solid gray;
+    border-collapse: collapse;
+  }
+
+  .table {
+    width: 100%;
+  }
 </style>
