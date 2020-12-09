@@ -1,15 +1,31 @@
 <script>
   import CovidApi from './api/CovidApi.svelte'
-  let list = [];
-	export let title;
+
+  let countries = [];
+  let country = 'Hello';
+  let totalStatus = [];
+
+  async function handleChange () {
+    const totalStatusAPI = `https://api.covid19api.com/total/country/${country}`;
+    try {
+      const response = await fetch(totalStatusAPI);
+      totalStatus = await response.json();
+    } catch (err) {
+      console.error(err)
+    }
+  };
+
+  export let title;
 </script>
 
-<CovidApi bind:list={list}/>
+<CovidApi bind:countries={countries}/>
 
 <main>
-	<h1>{title}</h1>
-	<select>
-	  <option>South Korea</option>
+  <h1>{title}</h1>
+	<select bind:value={country} on:change={handleChange}>
+    {#each countries as country}
+      <option value="{country.Slug}">{country.Country}</option>
+    {/each}
 	</select>
 	<table class="table">
 	  <thead>
@@ -23,7 +39,7 @@
       </tr>
 	  </thead>
 	  <tbody>
-      {#each list as item}
+      {#each totalStatus as item}
       <tr>
         <td>{item.Country}</td>
         <td>{item.Date}</td>

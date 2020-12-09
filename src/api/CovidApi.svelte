@@ -1,12 +1,21 @@
 <script>
   import { onMount } from "svelte";
 
-  const apiURL = 'https://api.covid19api.com/total/country/south-korea';
+  const countryAPI = 'https://api.covid19api.com/countries';
 
-  export let list = [];
+  export let countries = [];
 
   onMount(async () => {
-    const response = await fetch(apiURL);
-    list = await response.json();
+    try {
+      const response = await fetch(countryAPI);
+      countries = await response.json();
+      countries.sort((a, b) => {
+        return a.Slug > b.Slug
+        ? 1
+        : -1
+      });
+    } catch (err) {
+      console.error(err)
+    }
   });
 </script>
