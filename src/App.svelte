@@ -1,34 +1,55 @@
 <script>
-  import CovidApi from './api/CovidApi.svelte'
+import { onMount } from 'svelte';
 
-  let countries = [];
-  let country = 'Hello';
-  let totalStatus = [];
+import CovidApi from './api/CovidApi.svelte'
+import ChartComponent from './components/Chart.svelte'
 
-  async function handleChange () {
-    const totalStatusAPI = `https://api.covid19api.com/total/country/${country}`;
-    try {
-      const response = await fetch(totalStatusAPI);
-      totalStatus = await response.json();
-    } catch (err) {
-      console.error(err)
-    }
-  };
+let countries = [];
+let country = 'korea-south';
+let totalStatus = [];
 
-  export let title;
+onMount(async () => {
+  fetchCountryByTotalStatus()
+})
+
+function handleChange () {
+  fetchCountryByTotalStatus()
+};
+
+async function fetchCountryByTotalStatus() {
+  const totalStatusAPI = `https://api.covid19api.com/total/country/${country}`;
+  try {
+    const response = await fetch(totalStatusAPI);
+    totalStatus = await response.json();
+    totalStatus.sort((a, b) => {
+      if (a.Date < b.Date) {
+        return 1;
+      }
+      if (a.Date > b.Date) {
+        return -1;
+      }
+      return 0;
+    })
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export let title;
 </script>
 
 <CovidApi bind:countries={countries}/>
 
 <main>
   <h1>{title}</h1>
-	<select bind:value={country} on:change={handleChange}>
-    {#each countries as country}
-      <option value="{country.Slug}">{country.Country}</option>
-    {/each}
-	</select>
-	<table class="table">
-	  <thead>
+  <select bind:value={country} on:change={handleChange}>
+  {#each countries as country}
+    <option value="{country.Slug}">{country.Country}</option>
+  {/each}
+  </select>
+  <ChartComponent/>
+  <table class="table">
+    <thead>
       <tr>
         <th>Country</th>
         <th>Date</th>
@@ -37,8 +58,8 @@
         <th>Recovered</th>
         <th>Active</th>
       </tr>
-	  </thead>
-	  <tbody>
+    </thead>
+    <tbody>
       {#each totalStatus as item}
       <tr>
         <td>{item.Country}</td>
@@ -49,37 +70,14 @@
         <td>{item.Active}</td>
       </tr>
       {/each}
-	  </tbody>
-	</table>
+    </tbody>
+  </table>
 </main>
 
 <style lang="scss">
-  @media (min-width: 640px) {
-    main {
-      max-width: none;
-    }
-  }
-  $color: #ff3e00;
-  main {
-    text-align: center;
-    padding: 1em;
-    max-width: 1920px;
-    margin: 0 auto;
-  }
-
-  h1 {
-    color: $color;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
-  };
-
-  table, th, tr, td {
-    border: 1px solid gray;
-    border-collapse: collapse;
-  }
-
   .table {
-    width: 100%;
+    td {
+      border: 1px solid black;
+    }
   }
 </style>
